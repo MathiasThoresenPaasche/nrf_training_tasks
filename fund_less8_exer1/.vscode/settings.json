@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "string.h": "c",
+        "rand32.h": "c"
+    }
+}
