@@ -18,9 +18,14 @@ typedef void(*StatePtr)(StateMachine * sm, Event ev);
 
 struct StateMachine{
     StatePtr current_state;
+    bool pedestrian_button_pressed;
+    struct k_mutex *mtx;
+    k_tid_t t_id;
 };
 
 void transition(StateMachine *sm, StatePtr new_state);
+void internal_state_transition(StateMachine *sm, StatePtr new_state);
+
 void light_timer_expire(struct  k_timer *timer_id);
 
 

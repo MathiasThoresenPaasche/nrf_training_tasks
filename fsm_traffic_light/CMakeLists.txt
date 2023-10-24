@@ -13,6 +13,8 @@ target_sources(app PRIVATE src/log.c)
 target_sources(app PRIVATE src/led.c)
 target_sources(app PRIVATE src/button.c)
 target_sources(app PRIVATE src/fsm.c)
+# target_sources(app PRIVATE src/timer.c)
+
 
 # target_sources(app PRIVATE build/zephyr/misc/generated/syscalls_links/include/zephyr/debug/thread_analyzer.h)
 

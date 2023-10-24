@@ -12,48 +12,37 @@
 #include "fsm.h"
 
 #define HEAP_SIZE 2048
+K_MUTEX_DEFINE(pedestrian_mtx);
 LOG_MODULE_DECLARE(log_module);
 static StateMachine myStateMachine;
 
 
 void _button_callback(const short button){
-//   // Event ev;
-  
-//   switch (button)
-//   {
-//   case PUSH_BUTTON:
-//     // ev.sig = PUSH_SIG;
-//     fsm_base_add_ev(&fsm.super,&ev_push);
-//     break;
-//   case CARD_BUTTON:
-//     // ev.sig = CARD_SIG;
-//     fsm_base_add_ev(&fsm.super,&ev_card);
-//     break;
-//   default:
-//     break;
-//   }
-}
+  if (k_mutex_lock(myStateMachine.mtx, K_MSEC(100)) == 0) {
+    /* mutex successfully locked */
+    if(!myStateMachine.pedestrian_button_pressed){
+      myStateMachine.pedestrian_button_pressed = true;
+    }
+    k_mutex_unlock(myStateMachine.mtx);
+    LOG_INF("Pedestrian_button_pressed = true");
 
-// void new_state_machine(StateMachine *sm){
-//   LOG_INF("new sm in making");
-//   StatePtr new_state_ptr;
-//   sm->current_state = init;
-//   sm->current_state(sm,ENTRY);
-//   sm->current_state(sm,INIT);
-  
-  
-//   // StatePtr new_state = init;
-//   // init(result,INIT);
-//   // transition(result, new_state);
-//   // return result;
-//   }
+  } else {
+    LOG_WRN("Cannot lock pedestrian_mtx");
+  }
+  if(myStateMachine.current_state == ew_green){
+    k_wakeup(myStateMachine.t_id);
+  }
+}
 
 void main(void)
 {
+  myStateMachine.pedestrian_button_pressed = false;
+  myStateMachine.mtx = &pedestrian_mtx;
+  myStateMachine.t_id = k_current_get();
   button_init(_button_callback);
   init(&myStateMachine,INIT);
-  while(1){
+  // while(1){
 
-  }
+  // }
    
 }
